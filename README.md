@@ -15,5 +15,7 @@ Em seguida, criar uma nova branch
 Para subir as modificações:
 
 `$ git add .`
+
 `$ git commit -m "{modificação feita}"`
+
 `$ git push origin {branch}`
