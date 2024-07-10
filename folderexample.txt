@@ -1,0 +1,82 @@
+ecommerce-project/
+│
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   ├── authController.ts
+│   │   │   ├── productController.ts
+│   │   │   ├── supplierController.ts
+│   │   │   ├── managerController.ts
+│   │   ├── models/
+│   │   │   ├── userModel.ts
+│   │   │   ├── productModel.ts
+│   │   │   ├── supplierModel.ts
+│   │   │   ├── managerModel.ts
+│   │   ├── routes/
+│   │   │   ├── authRoutes.ts
+│   │   │   ├── productRoutes.ts
+│   │   │   ├── supplierRoutes.ts
+│   │   │   ├── managerRoutes.ts
+│   │   ├── services/
+│   │   │   ├── authService.ts
+│   │   │   ├── productService.ts
+│   │   │   ├── supplierService.ts
+│   │   │   ├── managerService.ts
+│   │   ├── utils/
+│   │   │   ├── database.ts
+│   │   │   ├── validators.ts
+│   │   ├── app.ts
+│   │   ├── server.ts
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── .env
+│   ├── .env.example
+│
+├── frontend/
+│   ├── components/
+│   │   ├── auth/
+│   │   │   ├── LoginForm.tsx
+│   │   │   ├── RegisterForm.tsx
+│   │   ├── layout/
+│   │   │   ├── Header.tsx
+│   │   │   ├── Footer.tsx
+│   │   ├── products/
+│   │   │   ├── ProductList.tsx
+│   │   │   ├── ProductItem.tsx
+│   │   ├── suppliers/
+│   │   │   ├── SupplierList.tsx
+│   │   │   ├── SupplierItem.tsx
+│   │   ├── managers/
+│   │   │   ├── ManagerList.tsx
+│   │   │   ├── ManagerItem.tsx
+│   ├── pages/
+│   │   ├── index.tsx
+│   │   ├── login.tsx
+│   │   ├── register.tsx
+│   │   ├── products/
+│   │   │   ├── index.tsx
+│   │   │   ├── [id].tsx
+│   │   ├── suppliers/
+│   │   │   ├── index.tsx
+│   │   │   ├── [id].tsx
+│   │   ├── managers/
+│   │   │   ├── index.tsx
+│   │   │   ├── [id].tsx
+│   ├── public/
+│   │   ├── images/
+│   │   │   ├── logo.png
+│   ├── styles/
+│   │   ├── globals.css
+│   ├── utils/
+│   │   ├── api.ts
+│   ├── next.config.js
+│   ├── tsconfig.json
+│   ├── package.json
+│   ├── .env
+│   ├── .env.example
+│
+├── database/
+│   ├── schema.sql
+│   ├── seed.sql
+│
+├── README.md
