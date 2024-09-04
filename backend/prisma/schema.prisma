@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  cpf_cnpj        String    @id
+  rg              String?
+  nome_completo   String
+  data_nascimento DateTime?
+  email           String    @unique
+  senha           String
+  endereco        String?
+  telefone        String?
+  data_admissao   DateTime
+  salario         Float
+  status          String
+  setor           String?
+  is_vendedor     Boolean // Flag para identificar se o usuário é vendedor
+  Produtos        Produto[] @relation("GerenteProdutos")
+  Vendas          Venda[]   @relation("VendedorVendas")
+}
+
+model Produto {
+  codigo_barras   String          @id
+  nome            String
+  descricao       String?
+  categoriaId     Int?
+  preco           Float
+  estoque         Int
+  marca           String?
+  data_fabricacao DateTime?
+  data_validade   DateTime?
+  imagem_url      String?
+  status          String
+  fornecedor      String?
+  Categoria       Categoria?      @relation(fields: [categoriaId], references: [id])
+  gerenteId       String?
+  Gerente         Usuario?        @relation("GerenteProdutos", fields: [gerenteId], references: [cpf_cnpj])
+  Venda_Produto   Venda_Produto[]
+}
+
+model Categoria {
+  id        Int       @id @default(autoincrement())
+  nome      String
+  descricao String?
+  Produtos  Produto[]
+}
+
+model Venda {
+  numero_pedido    String          @id
+  data_venda       DateTime
+  nome_cliente     String
+  cpf_cnpj_cliente String
+  valor_total      Float
+  desconto         Float?
+  valor_final      Float
+  forma_pagamento  String
+  status_venda     String
+  data_entrega     DateTime?
+  endereco_entrega String?
+  vendedorId       String
+  Vendedor         Usuario         @relation("VendedorVendas", fields: [vendedorId], references: [cpf_cnpj])
+  Venda_Produto    Venda_Produto[]
+}
+
+model Venda_Produto {
+  vendaId        String // FK para Venda
+  produtoId      String // FK para Produto
+  quantidade     Int
+  preco_unitario Float
+  Venda          Venda   @relation(fields: [vendaId], references: [numero_pedido])
+  Produto        Produto @relation(fields: [produtoId], references: [codigo_barras])
+
+  @@id([vendaId, produtoId])
+}
