@@ -1,15 +1,59 @@
 const express = require('express');
-const GerenteController = require('../controllers/gerenteController');
 const router = express.Router();
+const GerenteController = require('../controllers/gerenteController');
+const LoginController = require('../controllers/loginController');
 
-// CRUD vendedores
+// Middleware para autenticação
+router.use(LoginController.authenticateToken);
 
-// CRUD produtos
+// Adiciona um novo produto
+router.post('/produtos', (req, res) => {
+    GerenteController.addProduto(req, res);
+});
 
-// pegar todos os produtos
-// pegar todos os vendedores
-// pegar todas as vendas
+// Remove um produto
+router.delete('/produtos', (req, res) => {
+    GerenteController.removeProduto(req, res);
+});
 
-// fazer busca por vendedor
+// Atualiza um produto
+router.put('/produtos', (req, res) => {
+    GerenteController.editProduto(req, res);
+});
+
+// Lista todos os produtos
+router.get('/produtos', (req, res) => {
+    GerenteController.listProdutos(req, res);
+});
+
+// Adiciona um novo vendedor
+router.post('/vendedores', (req, res) => {
+    GerenteController.addVendedor(req, res);
+});
+
+// Remove um vendedor
+router.delete('/vendedores', (req, res) => {
+    GerenteController.removeVendedor(req, res);
+});
+
+// Atualiza um vendedor
+router.put('/vendedores', (req, res) => {
+    GerenteController.editVendedor(req, res);
+});
+
+// Lista todos os vendedores
+router.get('/vendedores', (req, res) => {
+    GerenteController.listVendedores(req, res);
+});
+
+// Lista todas as vendas
+router.get('/vendas', (req, res) => {
+    GerenteController.listVendas(req, res);
+});
+
+// Gera relatório
+router.get('/relatorio', (req, res) => {
+    GerenteController.gerarRelatorio(req, res);
+});
 
 module.exports = router;

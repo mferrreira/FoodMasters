@@ -1,13 +1,40 @@
 const express = require('express');
-const ProdutoController = require('../controllers/produtoController');
 const router = express.Router();
+const ProdutoController = require('../controllers/produtoController');
+const LoginController = require('../controllers/loginController');
 
-// pegar informações do produto
+// Middleware para autenticação
+//router.use(LoginController.authenticateToken);
 
-// listar todos os produtos
+// Rota para criar um novo produto
 
-// listar produtos por categoria
+router.post('/', async (req, res) => {
+    await ProdutoController.create(req, res);
+});
 
-// fazer query de produto
+// Rota para atualizar um produto existente
+router.put('/:codigoBarras', async (req, res) => {
+    await ProdutoController.update(req, res);
+});
+
+// Rota para deletar um produto existente
+router.delete('/:codigoBarras', async (req, res) => {
+    await ProdutoController.delete(req, res);
+});
+
+// Rota para obter um produto específico
+router.get('/:codigoBarras', async (req, res) => {
+    await ProdutoController.getProduto(req, res);
+});
+
+// Rota para obter todos os produtos
+router.get('/', async (req, res) => {
+    await ProdutoController.listarTodosProdutos(req, res);
+});
+
+// Rota para associar um produto a uma categoria
+router.post('/:codigoBarras/categoria/:categoriaId', async (req, res) => {
+    await ProdutoController.associarCategoria(req, res);
+});
 
 module.exports = router;
