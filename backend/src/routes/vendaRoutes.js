@@ -1,11 +1,39 @@
 const express = require('express');
-const vendaController = require('../controllers/vendaControler');
 const router = express.Router();
+const VendaController = require('../controllers/vendaController');
+const LoginController = require('../controllers/loginController');
 
-// gerar recibo
+// Middleware para autenticação
+router.use(LoginController.authenticateToken);
 
-// fazer a venda
+// Rota para criar uma nova venda
+router.post('/', async (req, res) => {
+    await VendaController.createVenda(req, res);
+});
 
-// obter venda feita
+// Rota para atualizar uma venda existente
+router.put('/:numeroPedido', async (req, res) => {
+    await VendaController.updateVenda(req, res);
+});
+
+// Rota para deletar uma venda existente
+router.delete('/:numeroPedido', async (req, res) => {
+    await VendaController.deleteVenda(req, res);
+});
+
+// Rota para obter uma venda específica
+router.get('/:numeroPedido', async (req, res) => {
+    await VendaController.getVenda(req, res);
+});
+
+// Rota para obter todas as vendas
+router.get('/', async (req, res) => {
+    await VendaController.getTodasVendas(req, res);
+});
+
+// Rota para gerar um recibo para uma venda específica
+router.get('/:numeroPedido/recibo', async (req, res) => {
+    await VendaController.gerarRecibo(req, res);
+});
 
 module.exports = router;

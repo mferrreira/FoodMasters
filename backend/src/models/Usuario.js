@@ -44,7 +44,7 @@ class Usuario {
         }
     }
 
-    static async findById(id) {
+    static async findByCpf(id) {
         try {
             const user = await prisma.usuario.findUnique({ where: {id: id}});
             return user
