@@ -5,13 +5,17 @@ const prisma = require('../services/prismaClient');
 
 class Vendedor extends Usuario {
 
-    constructor(cpf, rg, nomeCompleto, dataNascimento, email, senha, endereco, telefone, dataAdmissao, salario, status, setor) {
-        super(cpf, rg, nomeCompleto, dataNascimento, email, senha, endereco, telefone, dataAdmissao, salario, status, setor);
+
+    constructor(cpf, nomeCompleto, email, senha,dataNascimento, 
+        rg, endereco, telefone, dataAdmissao, salario, status, setor
+    ) {
+        super(cpf, nomeCompleto, email, senha,dataNascimento, rg, endereco, telefone, dataAdmissao, salario, status, setor);
     }
 
     // Realizar venda
-    async realizarVenda(dadosVenda) {
+    async iniciarVenda(dadosVenda) {
         const venda = new Venda(
+            this.cpf,
             dadosVenda.numeroPedido,
             dadosVenda.dataVenda,
             dadosVenda.nomeCliente,
@@ -23,10 +27,16 @@ class Vendedor extends Usuario {
             dadosVenda.statusVenda,
             dadosVenda.dataEntrega,
             dadosVenda.enderecoEntrega,
-            this.cpf // ID do vendedor
         );
 
-        return await venda.criarVenda();
+        // venda.save();
+        return venda
+    }
+
+    async addProdutoVenda(Produto, Venda) {
+        Venda.addProduto(Produto);
+        Venda.updateValue
+        return;
     }
 
     // Visualizar venda
@@ -45,7 +55,11 @@ class Vendedor extends Usuario {
         return produtos;
     }
 
-    // Gerar recibo
+    async obterProduto(codigo_barras) {
+        const produto = Produto.getProdutoPorCodigo(codigo_barras);
+        return produto
+    }
+
     async gerarRecibo(numeroPedido) {
         const venda = await this.visualizarVenda(numeroPedido);
         return venda.gerarRecibo();

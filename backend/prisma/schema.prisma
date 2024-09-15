@@ -19,9 +19,9 @@ model Usuario {
   senha           String
   endereco        String?
   telefone        String?
-  data_admissao   DateTime
-  salario         Float
-  status          String
+  data_admissao   DateTime?
+  salario         Float?
+  status          String?
   setor           String?
   is_vendedor     Boolean // Flag para identificar se o usuário é vendedor
   Produtos        Produto[] @relation("GerenteProdutos")
@@ -33,13 +33,13 @@ model Produto {
   nome            String
   descricao       String?
   categoriaId     Int?
-  preco           Float
-  estoque         Int
+  preco           Float?
+  estoque         Int?
   marca           String?
   data_fabricacao DateTime?
   data_validade   DateTime?
   imagem_url      String?
-  status          String
+  status          String?
   fornecedor      String?
   Categoria       Categoria?      @relation(fields: [categoriaId], references: [id])
   gerenteId       String?
@@ -55,15 +55,15 @@ model Categoria {
 }
 
 model Venda {
-  numero_pedido    String          @id
-  data_venda       DateTime
-  nome_cliente     String
-  cpf_cnpj_cliente String
-  valor_total      Float
+  numero_pedido    String          @id @default(autoincrement())
+  data_venda       DateTime?
+  nome_cliente     String?
+  cpf_cnpj_cliente String?
+  valor_total      Float?
   desconto         Float?
-  valor_final      Float
-  forma_pagamento  String
-  status_venda     String
+  valor_final      Float?
+  forma_pagamento  String?
+  status_venda     String?
   data_entrega     DateTime?
   endereco_entrega String?
   vendedorId       String

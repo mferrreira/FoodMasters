@@ -13,10 +13,10 @@ app.use(express.json());
 app.use(cors());
 
 // Rotas
-app.use('/api/products', ProdutoRoutes);
-app.use('/api/users/manager', GerenteRoutes);
-app.use('/api/users/salesman', VendedorRoutes);
-app.use('/api/sales', VendaRoutes);
+app.use('/api/produtos', ProdutoRoutes);
+app.use('/api/users/gerente', GerenteRoutes);
+app.use('/api/users/vendedores', VendedorRoutes);
+app.use('/api/vendas', VendaRoutes);
 //app.use('/login', LoginRoutes);
 
 module.exports = app;

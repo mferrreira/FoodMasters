@@ -1,19 +1,18 @@
 const Gerente = require('../models/Gerente');
 const Produto = require('../models/Produto');
 const Vendedor = require('../models/Vendedor');
-const Venda = require('../models/Venda');
-const Usuario = require('../models/Usuario');
+const encontrarGerenteOuVendedor = require("../utils/encontrarGerenteOuVendedor");
 
 class GerenteController {
     // Adiciona um novo produto
     static async addProduto(req, res) {
         try {
             const { cpf, nome, descricao, categoriaId, preco, estoque, marca, data_fabricacao, data_validade, imagem_url, status, fornecedor } = req.body;
-            const gerente = await Gerente.findByCpf(cpf); // Supondo que você tenha um método para encontrar o gerente
+            const gerente = await encontrarGerenteOuVendedor(cpf);
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
             const produto = new Produto(cpf, nome, descricao, categoriaId, preco, estoque, marca, data_fabricacao, data_validade, imagem_url, status, fornecedor, gerente);
-            await produto.create(); // Cria o produto
+            await produto.save(); // Cria o produto
             res.status(201).json({ message: "Produto adicionado com sucesso" });
         } catch (error) {
             console.error("Erro ao adicionar produto:", error);
@@ -25,11 +24,12 @@ class GerenteController {
     static async removeProduto(req, res) {
         try {
             const { cpf, codigo_barras } = req.body;
-            const gerente = await Gerente.findByCpf(cpf);
+            const gerente = await encontrarGerenteOuVendedor(cpf);
+
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
-            const produto = new Produto(codigo_barras);
-            await produto.remove(); // Remove o produto
+            const produto = await Produto.getProdutoPorCodigo(codigo_barras);
+            await produto.delete(codigo_barras);
             res.status(200).json({ message: "Produto removido com sucesso" });
         } catch (error) {
             console.error("Erro ao remover produto:", error);
@@ -41,11 +41,12 @@ class GerenteController {
     static async editProduto(req, res) {
         try {
             const { cpf, codigo_barras, updateData } = req.body;
-            const gerente = await Gerente.findByCpf(cpf);
+            const gerente = await encontrarGerenteOuVendedor(cpf);
+
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
             const produto = new Produto(codigo_barras);
-            await produto.update(updateData); // Atualiza o produto
+            await produto.update(codigo_barras, updateData); // Atualiza o produto
             res.status(200).json({ message: "Produto atualizado com sucesso" });
         } catch (error) {
             console.error("Erro ao atualizar produto:", error);
@@ -68,11 +69,12 @@ class GerenteController {
     static async addVendedor(req, res) {
         try {
             const { cpf, rg, nomeCompleto, dataNascimento, email, senha, endereco, telefone, dataAdmissao, salario, status, setor } = req.body;
-            const gerente = await Gerente.findByCpf(cpf);
+            const gerente = await encontrarGerenteOuVendedor(cpf);
+
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
-            const vendedor = new Vendedor(cpf, rg, nomeCompleto, dataNascimento, email, senha, endereco, telefone, dataAdmissao, salario, status, setor);
-            await vendedor.create(); // Cria o vendedor
+            const vendedor = new Vendedor(cpf,nomeCompleto, email, senha, dataNascimento, rg,  endereco, telefone, dataAdmissao, salario, status, setor);
+            await vendedor.save(); // Cria o vendedor
             res.status(201).json({ message: "Vendedor adicionado com sucesso" });
         } catch (error) {
             console.error("Erro ao adicionar vendedor:", error);
@@ -84,11 +86,11 @@ class GerenteController {
     static async removeVendedor(req, res) {
         try {
             const { cpf, vendedorCpf } = req.body;
-            const gerente = await Gerente.findByCpf(cpf);
+            const gerente = await encontrarGerenteOuVendedor(cpf);
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
-            const vendedor = new Vendedor(vendedorCpf);
-            await vendedor.remove(); // Remove o vendedor
+            await gerente.removerVendedor(vendedorCpf);
+            
             res.status(200).json({ message: "Vendedor removido com sucesso" });
         } catch (error) {
             console.error("Erro ao remover vendedor:", error);
