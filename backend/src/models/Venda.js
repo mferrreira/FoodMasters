@@ -1,7 +1,9 @@
 class Venda {
 
-    constructor(numeroPedido, dataVenda, nomeCliente, cpfCliente, valorTotal, desconto, valorFinal, formaPagamento, statusVenda, dataEntrega, enderecoEntrega, vendedorId) {
-        this.numeroPedido = numeroPedido;
+    constructor(vendedorId, numeroPedido, dataVenda, nomeCliente, cpfCliente, valorTotal, desconto, valorFinal, formaPagamento, statusVenda, dataEntrega, enderecoEntrega) {
+        this.vendedorId = vendedorId;
+        this.numeroPedido = numeroPedido
+        
         this.dataVenda = dataVenda;
         this.nomeCliente = nomeCliente;
         this.cpfCliente = cpfCliente;
@@ -12,34 +14,59 @@ class Venda {
         this.statusVenda = statusVenda;
         this.dataEntrega = dataEntrega;
         this.enderecoEntrega = enderecoEntrega;
-        this.vendedorId = vendedorId;
 
-        this.produtos = []; // Inicializa o array de produtos
+        this.produtos = []; 
     }
 
     // CRUD Registro de Venda
     async save() {
-        // Verifica se a venda já existe
-        const existingVenda = await Venda.findByNumeroPedido(this.numeroPedido);
+        return await prisma.venda.create({
+            data: {
+                numero_pedido: this.numeroPedido,
+                data_venda: this.dataVenda,
+                nome_cliente: this.nomeCliente,
+                cpf_cnpj_cliente: this.cpfCliente,
+                valor_total: this.valorTotal,
+                desconto: this.desconto,
+                valor_final: this.valorFinal,
+                forma_pagamento: this.formaPagamento,
+                status_venda: this.statusVenda,
+                data_entrega: this.dataEntrega,
+                endereco_entrega: this.enderecoEntrega,
+                vendedorId: this.vendedorId,
+                Venda_Produto: {
+                    create: this.produtos.map(produto => ({
+                        produtoId: produto.codigo_barras,
+                        quantidade: produto.quantidade,
+                        preco_unitario: produto.preco_unitario,
+                    })),
+                },
+            },
+        });
+    }
+
+    async update(numeroPedido, ...novosDados) {
+        const existingVenda = await Venda.findByNumeroPedido(numeroPedido);
+        
         if (existingVenda) {
-            // Atualiza a venda existente
+
             return await prisma.venda.update({
-                where: { numero_pedido: this.numeroPedido },
+                where: { numero_pedido: novosDados.numeroPedido },
                 data: {
-                    data_venda: this.dataVenda,
-                    nome_cliente: this.nomeCliente,
-                    cpf_cnpj_cliente: this.cpfCliente,
-                    valor_total: this.valorTotal,
-                    desconto: this.desconto,
-                    valor_final: this.valorFinal,
-                    forma_pagamento: this.formaPagamento,
-                    status_venda: this.statusVenda,
-                    data_entrega: this.dataEntrega,
-                    endereco_entrega: this.enderecoEntrega,
-                    vendedorId: this.vendedorId,
+                    data_venda: novosDados.dataVenda,
+                    nome_cliente: novosDados.nomeCliente,
+                    cpf_cnpj_cliente: novosDados.cpfCliente,
+                    valor_total: novosDados.valorTotal,
+                    desconto: novosDados.desconto,
+                    valor_final: novosDados.valorFinal,
+                    forma_pagamento: novosDados.formaPagamento,
+                    status_venda: novosDados.statusVenda,
+                    data_entrega: novosDados.dataEntrega,
+                    endereco_entrega: novosDados.enderecoEntrega,
+                    vendedorId: novosDados.vendedorId,
                     Venda_Produto: {
-                        // Atualiza produtos associados
-                        upsert: this.produtos.map(produto => ({
+
+                        upsert: novosDados.produtos.map(produto => ({
                             where: { produtoId: produto.codigo_barras },
                             update: {
                                 quantidade: produto.quantidade,
@@ -50,31 +77,6 @@ class Venda {
                                 quantidade: produto.quantidade,
                                 preco_unitario: produto.preco_unitario,
                             },
-                        })),
-                    },
-                },
-            });
-        } else {
-            // Cria uma nova venda
-            return await prisma.venda.create({
-                data: {
-                    numero_pedido: this.numeroPedido,
-                    data_venda: this.dataVenda,
-                    nome_cliente: this.nomeCliente,
-                    cpf_cnpj_cliente: this.cpfCliente,
-                    valor_total: this.valorTotal,
-                    desconto: this.desconto,
-                    valor_final: this.valorFinal,
-                    forma_pagamento: this.formaPagamento,
-                    status_venda: this.statusVenda,
-                    data_entrega: this.dataEntrega,
-                    endereco_entrega: this.enderecoEntrega,
-                    vendedorId: this.vendedorId,
-                    Venda_Produto: {
-                        create: this.produtos.map(produto => ({
-                            produtoId: produto.codigo_barras,
-                            quantidade: produto.quantidade,
-                            preco_unitario: produto.preco_unitario,
                         })),
                     },
                 },
@@ -112,15 +114,16 @@ class Venda {
         });
     }
 
+
+    // TALVEZ não seja responsabilidade do server... excluir dps
     async calcularValorFinal() {
-        // Calcula o valor final da venda
         this.valorFinal = this.valorTotal - (this.desconto || 0);
-        await this.save(); // Atualiza a venda com o valor final calculado
+        await this.save();
     }
 
     async gerarRecibo() {
         // Gera um recibo para a venda
-        // Aqui você pode formatar a informação da venda para gerar um recibo
+
         return {
             numero_pedido: this.numeroPedido,
             data_venda: this.dataVenda,

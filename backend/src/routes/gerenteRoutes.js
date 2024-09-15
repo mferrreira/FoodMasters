@@ -4,7 +4,7 @@ const GerenteController = require('../controllers/gerenteController');
 const LoginController = require('../controllers/loginController');
 
 // Middleware para autenticação
-router.use(LoginController.authenticateToken);
+//router.use(LoginController.authenticateToken);
 
 // Adiciona um novo produto
 router.post('/produtos', (req, res) => {

@@ -1,7 +1,10 @@
 const PrismaClient = require('../services/prismaClient');
 
 class Produto {
-    constructor(codigo_barras, nome, descricao, categoriaId, preco, estoque, marca, data_fabricacao, data_validade, imagem_url, status, fornecedor) {
+    constructor(
+        codigo_barras, nome, descricao, categoriaId, preco, estoque, marca, 
+        data_fabricacao, data_validade, imagem_url, status, fornecedor
+    ) {
         this.codigo_barras = codigo_barras;
         this.nome = nome;
         this.descricao = descricao;
@@ -17,27 +20,7 @@ class Produto {
     }
 
     async save() {
-        if (await Produto.findByCodigoBarras(this.codigo_barras)) {
-            // Atualizar produto existente
-            return await prisma.produto.update({
-                where: { codigo_barras: this.codigo_barras },
-                data: {
-                    nome: this.nome,
-                    descricao: this.descricao,
-                    categoriaId: this.categoriaId,
-                    preco: this.preco,
-                    estoque: this.estoque,
-                    marca: this.marca,
-                    data_fabricacao: this.data_fabricacao,
-                    data_validade: this.data_validade,
-                    imagem_url: this.imagem_url,
-                    status: this.status,
-                    fornecedor: this.fornecedor,
-                },
-            });
-        } else {
-            // Criar novo produto
-            return await prisma.produto.create({
+        return await PrismaClient.produto.create({
                 data: {
                     codigo_barras: this.codigo_barras,
                     nome: this.nome,
@@ -53,7 +36,6 @@ class Produto {
                     fornecedor: this.fornecedor,
                 },
             });
-        }
     }
 
     // Atualizar Produto no banco de dados

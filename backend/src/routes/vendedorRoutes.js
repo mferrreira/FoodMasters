@@ -4,7 +4,7 @@ const VendedorController = require('../controllers/vendedorController');
 const LoginController = require('../controllers/loginController');
 
 // Middleware para autenticação
-router.use(LoginController.authenticateToken);
+//router.use(LoginController.authenticateToken);
 
 // Rota para realizar uma venda
 router.post('/vendas', VendedorController.realizarVenda);

@@ -1,28 +1,28 @@
 const prisma = require('../services/prismaClient');
-
 const bcrypt = require('bcryptjs');
+
 
 class Usuario {
 
-    constructor(cpf, rg, nomeCompleto, dataNascimento, email, senha, endereco, telefone, dataAdmissao, salario, status, setor) {
+    constructor(cpf, nomeCompleto, email, senha,dataNascimento, rg, endereco, telefone, dataAdmissao, salario, status, setor) {
         this.cpf = cpf;
-        this.rg = rg;
         this.nomeCompleto = nomeCompleto;
-        this.dataNascimento = dataNascimento;
         this.email = email;
         this.senha = senha;
+        this.rg = rg;
+        this.dataNascimento = dataNascimento == undefined ? new Date() : dataNascimento;
         this.endereco = endereco;
-        this.telefone = telefone;
-        this.dataAdmissao = dataAdmissao;
-        this.salario = salario;
+        this.telefone = telefone
+        this.dataAdmissao = dataAdmissao == undefined ? new Date() : dataAdmissao;
+        this.salario = salario === undefined ? 0 : salario,
         this.status = status;
         this.setor = setor;
     }
 
-    async save() {
+    async save(is_vendedor = true) {
         try {
-            const hashedPassword = bcrypt.hash(this.senha, 10);
-            const newUser = await prisma.usuario.create({
+            const hashedPassword = await bcrypt.hash(this.senha, 10);
+            await prisma.usuario.create({
                 data: {
                     cpf_cnpj: this.cpf,
                     rg: this.rg,
@@ -35,52 +35,46 @@ class Usuario {
                     data_admissao: this.dataAdmissao,
                     salario: this.salario,
                     status: this.status,
-                    setor: this.setor
+                    setor: this.setor,
+                    is_vendedor: is_vendedor,
                 }
             });
-            return newUser;
+            return true;
         } catch(e) {
-            throw new Error('Erro ao criar usuário: ' + e.message);
+            throw new Error('Erro ao criar usuário: ' + e);
         }
     }
 
-    static async findByCpf(id) {
-        try {
-            const user = await prisma.usuario.findUnique({ where: {id: id}});
-            return user
-        } catch (e) {
-            throw new Error('Erro ao buscar usuário' + e.message);
-        }
-    }
 
-    async update() {
+    async update(cpf, updateData) {
         try {
             const updatedUser = await prisma.usuario.update({
-                where: {cpf_cnpj: this.cpf},
+                where: {cpf: cpf},
                 data: {
-                    cpf_cnpj: this.cpf_cnpj,
-                    rg: this.rg,
-                    nome_completo: this.nome_completo,
-                    data_nascimento: this.data_nascimento,
-                    email: this.email,
-                    senha: this.senha,
-                    endereco: this.endereco,
-                    telefone: this.telefone,
-                    data_admissao: this.data_admissao,
-                    salario: this.salario,
-                    status: this.status,
-                    setor: this.setor
+                    cpf: cpf,
+                    rg: updateData.rg,
+                    nome_completo: updateData.nome_completo,
+                    data_nascimento: updateData.data_nascimento,
+                    email: updateData.email,
+                    senha: updateData.senha,
+                    endereco: updateData.endereco,
+                    telefone: updateData.telefone,
+                    data_admissao: updateData.data_admissao,
+                    salario: updateData.salario,
+                    status: updateData.status,
+                    setor: updateData.setor,
                 }
             });
+            return updatedUser;
         } catch(e) {
             throw new Error('Não foi possível atualizar os dados do usuário\n' + e.message);
         }
     }
 
-    static async delete(id) {
+    static async delete(cpf) {
         try {
           await prisma.usuario.delete({
-            where: { cpf_cnpj: this.cpf }
+            where: { cpf: cpf }
           });
         } catch (error) {
           throw new Error('Erro ao deletar usuário: ' + error.message);
@@ -95,6 +89,8 @@ class Usuario {
           throw new Error('Erro ao listar usuários: ' + error.message);
         }
       }
+
+
 }
 
 module.exports = Usuario;
