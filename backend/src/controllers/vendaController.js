@@ -39,7 +39,7 @@ class VendaController {
 
       // Adiciona produtos à venda
       for (const produtoData of produtos) {
-        const produto = await Produto.findByCodigoBarras(produtoData.codigo_barras);
+        const produto = await Produto.getProdutoPorCodigo(produtoData.codigo_barras);
         if (produto) {
           venda.addProduto({
             codigo_barras: produto.codigo_barras,
@@ -99,7 +99,7 @@ class VendaController {
       // Atualiza produtos
       if (produtos) {
         for (const produtoData of produtos) {
-          const produto = await Produto.findByCodigoBarras(produtoData.codigo_barras);
+          const produto = await Produto.getProdutoPorCodigo(produtoData.codigo_barras);
           if (produto) {
             if (produtoData.remove) {
               await venda.removeProduto({

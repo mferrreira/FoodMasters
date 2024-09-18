@@ -74,7 +74,7 @@ class GerenteController {
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
             const vendedor = new Vendedor(cpf,nomeCompleto, email, senha, dataNascimento, rg,  endereco, telefone, dataAdmissao, salario, status, setor);
-            await vendedor.save(); // Cria o vendedor
+            await vendedor.save(true); // Cria o vendedor
             res.status(201).json({ message: "Vendedor adicionado com sucesso" });
         } catch (error) {
             console.error("Erro ao adicionar vendedor:", error);
@@ -102,10 +102,10 @@ class GerenteController {
     static async editVendedor(req, res) {
         try {
             const { cpf, vendedorCpf, updateData } = req.body;
-            const gerente = await Gerente.findByCpf(cpf);
+            const gerente = await encontrarGerenteOuVendedor(cpf);
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
-            const vendedor = new Vendedor(vendedorCpf);
+            const vendedor = new encontrarGerenteOuVendedor(vendedorCpf);
             await vendedor.update(updateData); // Atualiza o vendedor
             res.status(200).json({ message: "Vendedor atualizado com sucesso" });
         } catch (error) {
@@ -129,10 +129,10 @@ class GerenteController {
     static async listVendas(req, res) {
         try {
             const { cpf } = req.body;
-            const gerente = await Gerente.findByCpf(cpf);
+            const gerente = await encontrarGerenteOuVendedor(cpf);
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
-            const vendas = await gerente.getTodasVendas(); // Acessa todas as vendas
+            const vendas = await gerente.listarTodasVendas(); // Acessa todas as vendas
             res.status(200).json(vendas);
         } catch (error) {
             console.error("Erro ao listar vendas:", error);
@@ -144,7 +144,7 @@ class GerenteController {
     static async gerarRelatorio(req, res) {
         try {
             const { cpf } = req.body;
-            const gerente = await Gerente.findByCpf(cpf);
+            const gerente = await encontrarGerenteOuVendedor(cpf);
             if (!gerente) return res.status(404).json({ error: "Gerente não encontrado" });
 
             const relatorio = await gerente.gerarRelatorio(); // Gera relatório

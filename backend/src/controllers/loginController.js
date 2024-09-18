@@ -29,7 +29,7 @@ class LoginController {
             );
             
             return res.status(200).json({
-                token, 
+                token,
                 user: {
                     id: usuario.cpf_cnpj, 
                     email: usuario.email, 

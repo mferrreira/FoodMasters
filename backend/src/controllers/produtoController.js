@@ -12,8 +12,8 @@ class ProdutoController {
                 return res.status(400).json({ error: "Campos obrigatórios não preenchidos" });
 
             // Verificar se o produto já existe
-            const existingProduct = await Produto.findByCodigoBarras(codigo_barras);
-            if (existingProduct) 
+            const produtoExiste = await Produto.getProdutoPorCodigo(codigo_barras);
+            if (produtoExiste) 
                 return res.status(400).json({ error: "Produto já existe" });
 
             const produto = new Produto(codigo_barras, nome, descricao, categoriaId, preco, estoque, marca, data_fabricacao, data_validade, imagem_url, status, fornecedor);
@@ -40,7 +40,7 @@ class ProdutoController {
     static async getProduto(req, res) {
         try {
             const { codigo_barras } = req.params;
-            const produto = await Produto.findByCodigoBarras(codigo_barras);
+            const produto = await Produto.getProdutoPorCodigo(codigo_barras);
 
             if (!produto) 
                 return res.status(404).json({ error: "Produto não encontrado" });
@@ -57,7 +57,7 @@ class ProdutoController {
             const { codigo_barras } = req.params;
             const { nome, descricao, categoriaId, preco, estoque, marca, data_fabricacao, data_validade, imagem_url, status, fornecedor } = req.body;
 
-            const produto = await Produto.findByCodigoBarras(codigo_barras);
+            const produto = await Produto.getProdutoPorCodigo(codigo_barras);
 
             if (!produto) 
                 return res.status(404).json({ error: "Produto não encontrado" });
@@ -87,7 +87,7 @@ class ProdutoController {
     static async delete(req, res) {
         try {
             const { codigo_barras } = req.params;
-            const produto = await Produto.findByCodigoBarras(codigo_barras);
+            const produto = await Produto.getProdutoPorCodigo(codigo_barras);
 
             if (!produto) 
                 return res.status(404).json({ error: "Produto não encontrado" });
@@ -110,7 +110,7 @@ class ProdutoController {
                 return res.status(400).json({ error: "Categoria ID é obrigatório" });
 
             // Encontrar o produto
-            const produto = await Produto.findByCodigoBarras(codigo_barras);
+            const produto = await Produto.getProdutoPorCodigo(codigo_barras);
             if (!produto) 
                 return res.status(404).json({ error: "Produto não encontrado" });
 

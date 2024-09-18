@@ -3,19 +3,19 @@ const router = express.Router();
 const VendedorController = require('../controllers/vendedorController');
 const LoginController = require('../controllers/loginController');
 
-// Middleware para autenticação
+// autenticação
 //router.use(LoginController.authenticateToken);
 
-// Rota para realizar uma venda
+// realizar  venda
 router.post('/vendas', VendedorController.realizarVenda);
 
-// Rota para visualizar uma venda específica
+// visualizar venda específica
 router.get('/vendas/:numeroPedido', VendedorController.visualizarVenda);
 
-// Rota para consultar todos os produtos
+// consultar todos os produtos
 router.get('/produtos', VendedorController.consultarProdutos);
 
-// Rota para gerar recibo de uma venda específica
+// gerar recibo de venda específica
 router.get('/vendas/:numeroPedido/recibo', VendedorController.gerarRecibo);
 
 module.exports = router;

@@ -5,10 +5,7 @@ const prisma = require('../services/prismaClient');
 
 class Vendedor extends Usuario {
 
-
-    constructor(cpf, nomeCompleto, email, senha,dataNascimento, 
-        rg, endereco, telefone, dataAdmissao, salario, status, setor
-    ) {
+    constructor(cpf, nomeCompleto, email, senha,dataNascimento, rg, endereco, telefone, dataAdmissao, salario, status, setor) {
         super(cpf, nomeCompleto, email, senha,dataNascimento, rg, endereco, telefone, dataAdmissao, salario, status, setor);
     }
 
@@ -40,7 +37,7 @@ class Vendedor extends Usuario {
     }
 
     // Visualizar venda
-    async visualizarVenda(numeroPedido) {
+    static async visualizarVenda(numeroPedido) {
         const venda = await prisma.venda.findUnique({
             where: { numero_pedido: numeroPedido },
             include: { Venda_Produto: true }
