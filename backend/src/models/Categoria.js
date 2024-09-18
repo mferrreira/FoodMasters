@@ -19,7 +19,7 @@ class Categoria {
     }
 
     // Atualizar categoria existente
-    async atualizarCategoria(id, novosDados) {
+    static async atualizarCategoria(id, novosDados) {
         const categoriaAtualizada = await prisma.categoria.update({
             where: { id: id },
             data: novosDados
@@ -28,7 +28,7 @@ class Categoria {
     }
 
     // Remover categoria
-    async removerCategoria(id) {
+    static async removerCategoria(id) {
         const categoriaRemovida = await prisma.categoria.delete({
             where: { id: id }
         });

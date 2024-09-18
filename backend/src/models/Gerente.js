@@ -11,6 +11,23 @@ class Gerente extends Usuario {
         super(cpf, nomeCompleto, email, senha,dataNascimento, rg, endereco, telefone, dataAdmissao, salario, status, setor);
     }
 
+    async addCategoria(...dadosCategoria){
+        const categoria = new Categoria(dadosCategoria.nome, dadosCategoria.descricao);
+        await categoria.adicionarCategoria();
+        return;
+    }
+
+    async removeCategoria(categoriaId) {
+        const categoria = await Categoria.obterCategoria(categoriaId);
+        await categoria.removeCategoria(categoriaId);
+        return;
+    }
+
+    async editarCategoria(categoriaId, dadosCategoria) {
+        const categoria = await Categoria.obterCategoria(categoriaId);
+        await categoria.editarCategoria(categoriaId, dadosCategoria);
+        return
+    }
 
     // CRUD Produtos
     async listarTodosProdutos() {

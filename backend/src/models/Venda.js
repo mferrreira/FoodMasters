@@ -1,3 +1,5 @@
+const prisma = require("../services/prismaClient");
+
 class Venda {
 
     constructor(vendedorId, numeroPedido, dataVenda, nomeCliente, cpfCliente, valorTotal, desconto, valorFinal, formaPagamento, statusVenda, dataEntrega, enderecoEntrega) {
@@ -91,7 +93,6 @@ class Venda {
     }
 
     async addProduto(produto) {
-        // Adiciona um produto à venda e atualiza o banco de dados
         this.produtos.push(produto);
         await prisma.venda_Produto.create({
             data: {
@@ -104,7 +105,6 @@ class Venda {
     }
 
     async removeProduto(produto) {
-        // Remove um produto da venda e atualiza o banco de dados
         this.produtos = this.produtos.filter(p => p.codigo_barras !== produto.codigo_barras);
         await prisma.venda_Produto.deleteMany({
             where: {

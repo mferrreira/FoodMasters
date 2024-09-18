@@ -1,11 +1,5 @@
-const { stdin, stdout, getegid } = require('process');
+const { stdin, stdout} = require('process');
 const Gerente = require('../models/Gerente');
-const prisma = require('../services/prismaClient');
-const Usuario = require('../models/Usuario');
-const Vendedor = require('../models/Vendedor');
-const Produto = require('../models/Produto');
-
-const encontrarGerenteOuVendedor = require('./encontrarGerenteOuVendedor');
 
 const readline = require('readline').createInterface({
     input: stdin,
