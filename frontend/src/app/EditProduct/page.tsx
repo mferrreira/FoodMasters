@@ -1,8 +1,8 @@
-export default function RegistrationProduct() {
+export default function EditProduct() {
     return (
-        <div className=" mx-auto my-6 bg-white  rounded-md">
-            <h2 className="text-2xl font-bold mb-6">Cadastro de Produto</h2>
-            <form className="space--4">
+        <div className=" mx-24 my-6 bg-white  rounded-md">
+            <h2 className="text-2xl font-bold mb-6">Alterar informações do Produto</h2>
+            <form className="space-y-4">
                 {/* Nome do Produto */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Nome do Produto</label>

@@ -1,4 +1,5 @@
 'use client'
+import Link from "next/link";
 import { useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { IoEye, IoAdd } from "react-icons/io5";
@@ -39,8 +40,8 @@ export default function ManageSeller() {
     const currentSellers = filteredSellers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
-        <div className="mx-auto my-6 bg-white rounded-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Gerenciar Vendedores</h2>
+        <div className="mx-24 bg-white rounded-md p-6">
+            <h2 className="text-2xl font-bold mb-4">Gerenciamento de Vendedores</h2>
             <div className="flex mb-4">
                 <input
                     type="text"
@@ -49,9 +50,11 @@ export default function ManageSeller() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <button className="bg-black text-white py-2 px-4 rounded-md flex items-center">
-                    <IoAdd className="mr-2" /> Adicionar Vendedor
-                </button>
+                <Link href="./RegisterSeller">
+                    <button className="bg-black text-white py-2 px-4 rounded-md flex items-center">
+                        <IoAdd className="mr-2" /> Adicionar Vendedor
+                    </button>
+                </Link>
             </div>
             <table className="min-w-full border-collapse">
                 <thead>
@@ -69,18 +72,22 @@ export default function ManageSeller() {
                             <td className="border-b p-4">{seller.status}</td>
                             <td className="border-b p-4">{seller.totalSales}</td>
                             <td className="border-b p-4 flex space-x-2">
-                                <button className="text-blue-500">
-                                    <FiEdit />
-                                </button>
+                                <Link href="./EditSeller/">
+                                    <button className="text-blue-500">
+                                        <FiEdit />
+                                    </button>
+                                </Link>
                                 <button
                                     className="text-red-500"
                                     onClick={() => handleDelete(seller.id)}
                                 >
                                     <FiTrash />
                                 </button>
-                                <button className="text-blue-500">
-                                    <IoEye />
-                                </button>
+                                <Link href="./SellerInformation/">
+                                    <button className="text-blue-500">
+                                        <IoEye />
+                                    </button>
+                                </Link>
                             </td>
                         </tr>
                     ))}
