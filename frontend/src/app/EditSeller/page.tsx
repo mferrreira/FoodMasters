@@ -1,6 +1,6 @@
 export default function EditSeller() {
     return (
-        <div className="mx-auto my-6 bg-white rounded-md">
+        <div className="mx-24 my-6 bg-white rounded-md">
             <h2 className="text-2xl font-bold mb-6">Alterar informações do Vendedor</h2>
             <form className="space-y-4">
                 {/* Nome Completo */}

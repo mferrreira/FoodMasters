@@ -1,6 +1,6 @@
 export default function SellerForm() {
   return (
-      <div className="mx-auto my-6 bg-white rounded-md">
+      <div className="mx-24 my-6 bg-white rounded-md">
           <h2 className="text-2xl font-bold mb-6">Cadastro de Vendedor</h2>
           <form className="space-y-4">
               {/* Nome Completo */}

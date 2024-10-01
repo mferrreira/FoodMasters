@@ -1,18 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    appDir: true,
+    appDir: true, // Configuração experimental do appDir
   },
-}
-
-module.exports = {
   webpack(config) {
+    // Adiciona suporte ao SVGR
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
+
     return config;
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
