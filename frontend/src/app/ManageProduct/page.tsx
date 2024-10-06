@@ -3,10 +3,8 @@ import { useState, useEffect } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { IoEye, IoAdd } from "react-icons/io5";
 import api from "../../services/api";
-import { AxiosResponse } from "axios";
 import Link from "next/link";
 
-// Definindo a interface para um produto
 interface Product {
   codigo_barras: string;
   nome: string;
@@ -23,69 +21,47 @@ interface Product {
   gerenteUsuarioId?: string;
 }
 
-// Simulação de produtos de exemplo
-const exemploProdutos: Product[] = [
-  {
-    codigo_barras: "123456789012",
-    nome: "Produto A",
-    descricao: "Descrição do Produto A",
-    preco: 100.0,
-    estoque: 50,
-    status: "Ativo",
-  },
-  {
-    codigo_barras: "987654321098",
-    nome: "Produto B",
-    descricao: "Descrição do Produto B",
-    preco: 200.0,
-    estoque: 20,
-    status: "Ativo",
-  },
-  {
-    codigo_barras: "543210987654",
-    nome: "Produto C",
-    descricao: "Descrição do Produto C",
-    preco: 150.0,
-    estoque: 10,
-    status: "Inativo",
-  },
-];
-
-// Atualizando a função getProducts para simular a resposta do servidor
-async function getProducts(): Promise<Product[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(exemploProdutos); // Retorna os produtos de exemplo após uma simulação de requisição
-    }, 1000);
-  });
-}
-
-// Exemplo de uso da interface Product no componente
 export default function ManageProduct() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 20;
-
   const [products, setProducts] = useState<Product[]>([]);
 
-  useEffect(() => {
-    async function fetchProducts() {
-      const fetchedProducts = await getProducts();
-      setProducts(fetchedProducts);
+  // Função para buscar produtos da API
+  const getProducts = async () => {
+    try {
+      const response = await api.get("/api/produtos");
+      console.log(response)
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
     }
-    fetchProducts();
+  };
+
+  useEffect(() => {
+    getProducts();
   }, []);
 
+  // Filtrar produtos com base no termo de busca
   const filteredProducts = products.filter(product =>
     product.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-  const handleDelete = (codigo_barras: string) => {
-    setProducts(products.filter(product => product.codigo_barras !== codigo_barras));
-  };
+  // Função para deletar um produto
+  const handleDelete = async (codigo_barras: string) => {
+    if (confirm("Você tem certeza que deseja excluir este produto?")) {
+        try {
+            await api.delete(`/api/produtos/${codigo_barras}`);
+            setProducts(products.filter(product => product.codigo_barras !== codigo_barras));
+        } catch (error) {
+            console.error("Erro ao excluir o produto:", error);
+        }
+    }
+};
 
+  // Paginação
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -133,9 +109,9 @@ export default function ManageProduct() {
               <td className="border-b p-4">{product.nome}</td>
               <td className="border-b p-4">{product.codigo_barras}</td>
               <td className="border-b p-4">{product.estoque}</td>
-              <td className="border-b p-4">{product.preco.toFixed(2)} R$</td>
+              <td className="border-b p-4"> R${product.preco}</td>
               <td className="border-b p-4 flex space-x-2">
-                <Link href="./EditProduct/">
+                <Link href={`./EditProduct/?id=${product.codigo_barras}`}>
                   <button className="text-blue-500">
                     <FiEdit />
                   </button>
@@ -146,7 +122,7 @@ export default function ManageProduct() {
                 >
                   <FiTrash />
                 </button>
-                <Link href="./ProductInformation">
+                <Link href={`./ProductInformation/?id=${product.codigo_barras}`}>
                   <button className="text-blue-500">
                     <IoEye />
                   </button>

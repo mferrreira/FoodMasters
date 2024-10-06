@@ -9,10 +9,13 @@ class LoginController {
         try {
 
             const { email, senha } = req.body;
+
+            console.log(email, senha)
+
             if (!email || !senha) 
                 return res.status(400).json({ error: "Email e senha são obrigatórios" });
 
-            const usuario = prisma.usuario.findUnique({ where: { email: email } });
+            const usuario = await prisma.usuario.findUnique({ where: { email: email } });
             if (!usuario) 
                 return res.status(401).json({error: "Credenciais inválidas"});
 
@@ -21,20 +24,15 @@ class LoginController {
                 return res.status(401).json({ error: "Credenciais inválidas"});
 
             const token = jwt.sign({   
-                id: usuario.cpf_cnpj,
-                email: usuario.email,
-                vendedor: usuario.is_vendedor ? 'vendedor' : 'gerente',}, 
+                user: usuario
+            }, 
                 jwtSecret, 
                 { expiresIn: tokenExpiration }
             );
             
             return res.status(200).json({
                 token,
-                user: {
-                    id: usuario.cpf_cnpj, 
-                    email: usuario.email, 
-                    role: usuario.is_vendedor ? 'vendedor' : 'gerente'
-                }
+                user: usuario
             });
 
     } catch (error) {
@@ -44,7 +42,10 @@ class LoginController {
   }
 
   static authenticateToken(req, res, next) {
-    const token = req.header('Authorizantion')?.split(' ')[1];
+
+      
+      const token = req.header('Authorization')?.split(' ')[1];
+      console.log("chegou requisição aqui", token)
     
     if (!token) return res.status(403).json({error: 'Acesso Negado!'});
 

@@ -1,5 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 import { useState } from "react";
+
+interface ProductInfo {
+    
+}
 
 export function CardProducts() {
     const [Discount, setDiscount] = useState(0);

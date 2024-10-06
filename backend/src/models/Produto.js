@@ -8,12 +8,12 @@ class Produto {
         this.codigo_barras = codigo_barras;
         this.nome = nome;
         this.descricao = descricao;
-        this.categoriaId = categoriaId;
-        this.preco = preco;
-        this.estoque = estoque;
+        this.categoriaId = parseInt(categoriaId);
+        this.preco = parseFloat(preco);
+        this.estoque = parseInt(estoque);
         this.marca = marca;
-        this.data_fabricacao = data_fabricacao;
-        this.data_validade = data_validade;
+        this.data_fabricacao = new Date(data_fabricacao);
+        this.data_validade = new Date(data_validade);
         this.imagem_url = imagem_url;
         this.status = status;
         this.fornecedor = fornecedor;
@@ -52,7 +52,7 @@ class Produto {
     }
 
     // Remover Produto do banco de dados
-    async delete(codigo_barras) {
+    static async delete(codigo_barras) {
         try {
             await PrismaClient.produto.delete({
                 where: { codigo_barras: codigo_barras }

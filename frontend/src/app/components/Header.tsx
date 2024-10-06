@@ -5,17 +5,18 @@ import { PiShoppingCartSimpleBold } from "react-icons/pi";
 import { LuUserCircle2 } from "react-icons/lu";
 import { useState } from "react";
 import Link from "next/link";
+import { useUser } from "@/context/UserContext"; // Importando o contexto de usuário
 
 export function Header() {
-    const [User, setUser] = useState<'Gerente' | 'Vendedor' | ''>('Gerente'); // Simulação do tipo de usuário
+    const { user, isAuthenticated, logout } = useUser(); // Desestruturando o contexto
     const [isMenuVisible, setIsMenuVisible] = useState(false); // Estado para controle da exibição do menu
-
 
     const handleUserMenuToggle = () => {
         setIsMenuVisible(!isMenuVisible);
     };
-
     return (
+
+        
         <div className="flex flex-row items-center justify-between mx-24 my-6">
             <div className="w-full flex justify-between mr-6">
                 <Link href="/">
@@ -29,7 +30,7 @@ export function Header() {
                     </button>
                 </form>
             </div>
-
+        {isAuthenticated && (
             <div className="flex flex-row w-16 justify-between">
                 <div className="relative">
                     <Link href="../Cart/">
@@ -56,7 +57,7 @@ export function Header() {
                                 <p className="text-black cursor-pointer hover:text-[#9A9A9A]">Gerenciamento Vendas</p>
                             </Link>
                             {/* Exibir opções adicionais para Gerente */}
-                            {User === 'Gerente' && (
+                            {user?.user?.is_vendedor == false ? (
                                 <>
                                     <Link href="../ManageProduct/">
                                         <p className="text-black cursor-pointer hover:text-[#9A9A9A]">Gerenciar Produtos</p>
@@ -65,11 +66,18 @@ export function Header() {
                                         <p className="text-black cursor-pointer hover:text-[#9A9A9A]">Gerenciar Vendedores</p>
                                     </Link>
                                 </>
-                            )}
+                            ) : <></> }
+
+                                <button 
+                                    onClick={() => logout()} 
+                                    className="text-red-500 cursor-pointer mt-2 hover:text-red-600"
+                                >
+                                    Sair
+                                </button>
                         </div>
-                    )}
+                    )} 
                 </div>
-            </div>
-        </div>
-    );
+                  </div>)}
+        </div> 
+    ) 
 }

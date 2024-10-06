@@ -1,13 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import api from '@/services/api';  // Importando a instância do Axios
+
+interface ProdutoVendido {
+  nome: string;
+  quantidade: number;
+  precoUnitario: number;
+}
 
 interface Venda {
   dataVenda: string;
   numeroPedido: string;
   nomeCliente: string;
   cpfCnpjCliente: string;
-  produtosVendidos: { nome: string; quantidade: number; precoUnitario: number }[];
+  produtosVendidos: ProdutoVendido[];
   valorTotal: number;
   desconto: number;
   valorFinal: number;
@@ -18,36 +25,49 @@ interface Venda {
   enderecoEntrega: string;
 }
 
-const vendaExemplo: Venda = {
-  dataVenda: '2024-09-30',
-  numeroPedido: '123456',
-  nomeCliente: 'João da Silva',
-  cpfCnpjCliente: '123.456.789-00',
-  produtosVendidos: [
-    { nome: 'Produto A', quantidade: 2, precoUnitario: 50 },
-    { nome: 'Produto B', quantidade: 1, precoUnitario: 150 },
-  ],
-  valorTotal: 250,
-  desconto: 25,
-  valorFinal: 225,
-  formaPagamento: 'Cartão de Crédito',
-  vendedorResponsavel: 'Maria dos Santos',
-  statusVenda: 'Em Processamento',
-  dataEntrega: '2024-10-05',
-  enderecoEntrega: 'Rua Exemplo, 123, Cidade Exemplo',
-};
-
-export default function ViewSales () {
+export default function ViewSales() {
   const [venda, setVenda] = useState<Venda | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Aqui você faria uma requisição para buscar as informações da venda
-    // Por exemplo, utilizando fetch ou axios. Estamos utilizando um exemplo fixo.
-    setVenda(vendaExemplo);
+    // Função para buscar a venda do backend
+    const fetchVenda = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Faz a requisição para a rota do backend responsável pelas vendas
+        const response = await api.get('/api/vendas/0');  // Passa o número do pedido, por exemplo
+
+        // Verifica se os dados existem e atualiza o estado
+        if (response.data) {
+          setVenda(response.data);
+        } else {
+          setError('Venda não encontrada');
+        }
+
+      } catch (err) {
+        setError('Erro ao buscar as informações da venda');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVenda();
   }, []);
 
-  if (!venda) {
+  if (loading) {
     return <p className="flex justify-center">Carregando informações da venda...</p>;
+  }
+
+  if (error) {
+    return <p className="flex justify-center text-red-500">{error}</p>;
+  }
+
+  if (!venda) {
+    return <p className="flex justify-center">Nenhuma venda encontrada.</p>;
   }
 
   return (
@@ -92,6 +112,4 @@ export default function ViewSales () {
       </div>
     </div>
   );
-};
-
-
+}

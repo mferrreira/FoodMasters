@@ -4,7 +4,7 @@ const VendedorController = require('../controllers/vendedorController');
 const LoginController = require('../controllers/loginController');
 
 // autenticação
-//router.use(LoginController.authenticateToken);
+router.use(LoginController.authenticateToken);
 
 // realizar  venda
 router.post('/vendas', VendedorController.realizarVenda);

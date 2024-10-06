@@ -1,5 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation'; // Importando o useSearchParams
+import api from '@/services/api';
 
 // Definindo a interface para os dados do produto
 interface ProductDetails {
@@ -17,32 +20,41 @@ interface ProductDetails {
   fornecedor: string;
 }
 
-// Dados fictícios do produto
-const produtoExemplo: ProductDetails = {
-  nome: 'Produto Exemplo',
-  descricao: 'Este é um exemplo de descrição para o Produto Exemplo.',
-  categoria: 'Tecnologia',
-  preco: 299.99,
-  estoque: 20,
-  codigo_barras: '123456789012',
-  marca: 'Marca Exemplo',
-  data_fabricacao: '2023-01-01',
-  data_validade: '2025-01-01',
-  imagem_url: 'https://via.placeholder.com/150', // URL da imagem do produto
-  status: 'Ativo',
-  fornecedor: 'Fornecedor Exemplo',
-};
-
 export default function ProductInformation() {
   const [product, setProduct] = useState<ProductDetails | null>(null);
+  const [loading, setLoading] = useState(true); // Estado para controle de loading
+  const searchParams = useSearchParams(); // Hook para acessar os parâmetros da busca
+  const id = searchParams.get('id'); // Obtendo o ID do produto a partir dos parâmetros da busca
 
   useEffect(() => {
-    // Simulação de uma requisição para buscar os detalhes do produto
-    setProduct(produtoExemplo);
-  }, []);
+    if (id) {
+      // Função para buscar os detalhes do produto
+      const fetchProductDetails = async () => {
+        try {
+          const response = await api.get(`/api/users/gerente/produto/${id}`);
+          if (!response) {
+            throw new Error('Erro ao buscar os detalhes do produto');
+          }
+          const data: ProductDetails = await response.data;
+          console.log(data)
+          setProduct(data); // Atualiza o estado com os dados do produto
+        } catch (error) {
+          console.error(error); // Log do erro
+        } finally {
+          setLoading(false); // Define loading como false após a requisição
+        }
+      };
+
+      fetchProductDetails(); // Chama a função para buscar os detalhes
+    }
+  }, [id]); // Reexecuta o efeito quando o ID muda
+
+  if (loading) {
+    return <p>Carregando detalhes do produto...</p>;
+  }
 
   if (!product) {
-    return <p>Carregando detalhes do produto...</p>;
+    return <p>Produto não encontrado.</p>; // Mensagem caso o produto não seja encontrado
   }
 
   return (
@@ -51,18 +63,21 @@ export default function ProductInformation() {
       
       <div className="flex flex-col md:flex-row items-start md:items-center">
         {/* Exibição da imagem do produto */}
+        <div className="md:w-1/4">
+          <img src={product.imagem_url} alt={product.nome} className="w-full h-auto rounded-md" />
+        </div>
         
         {/* Informações detalhadas do produto */}
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:ml-6">
           <div><strong>Nome do Produto:</strong> {product.nome}</div>
           <div><strong>Descrição:</strong> {product.descricao}</div>
           <div><strong>Categoria:</strong> {product.categoria}</div>
-          <div><strong>Preço:</strong> R$ {product.preco.toFixed(2)}</div>
+          <div><strong>Preço:</strong> R$ {product.preco?.toFixed(2)}</div>
           <div><strong>Quantidade em Estoque:</strong> {product.estoque}</div>
           <div><strong>Código de Barras:</strong> {product.codigo_barras}</div>
           <div><strong>Marca:</strong> {product.marca}</div>
-          <div><strong>Data de Fabricação:</strong> {product.data_fabricacao}</div>
-          <div><strong>Data de Validade:</strong> {product.data_validade}</div>
+          <div><strong>Data de Fabricação:</strong> {new Date(product.data_fabricacao).toLocaleDateString('pt-BR')}</div>
+          <div><strong>Data de Validade:</strong> {new Date(product.data_validade).toLocaleDateString('pt-BR')}</div>
           <div><strong>Status:</strong> {product.status}</div>
           <div><strong>Fornecedor:</strong> {product.fornecedor}</div>
         </div>

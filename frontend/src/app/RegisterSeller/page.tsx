@@ -1,14 +1,36 @@
+"use client"
+
+import api from "../../services/api";
+
 export default function SellerForm() {
-  return (
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const formData  = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData);
+
+        console.log(data);
+
+        try {
+            const res = await api.post("/api/users/gerente/vendedores", data);
+            console.log("Produo cadastrado!", res.data);
+            alert(res.data.message)
+        } catch(e) {
+            console.log("Deu erro aqui: ", e);
+        }
+    }
+
+    return (
       <div className="mx-24 my-6 bg-white rounded-md">
           <h2 className="text-2xl font-bold mb-6">Cadastro de Vendedor</h2>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
               {/* Nome Completo */}
               <div>
                   <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
                   <input
                       type="text"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
+                      name="nome_completo"
                       placeholder="Digite o nome completo"
                   />
               </div>
@@ -17,6 +39,7 @@ export default function SellerForm() {
               <div>
                   <label className="block text-sm font-medium text-gray-700">CPF</label>
                   <input
+                      name="cpf_cnpj"
                       type="text"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                       placeholder="Digite o CPF"
@@ -27,6 +50,7 @@ export default function SellerForm() {
               <div>
                   <label className="block text-sm font-medium text-gray-700">RG</label>
                   <input
+                        name="rg"
                       type="text"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                       placeholder="Digite o RG"
@@ -38,6 +62,7 @@ export default function SellerForm() {
                   <label className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
                   <input
                       type="date"
+                      name="data_nascimento"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                   />
               </div>
@@ -46,6 +71,7 @@ export default function SellerForm() {
               <div>
                   <label className="block text-sm font-medium text-gray-700">Endereço</label>
                   <input
+                  name="endereco"
                       type="text"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                       placeholder="Digite o endereço"
@@ -56,6 +82,7 @@ export default function SellerForm() {
               <div>
                   <label className="block text-sm font-medium text-gray-700">Telefone</label>
                   <input
+                        name="telefone"
                       type="tel"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                       placeholder="Digite o telefone"
@@ -66,9 +93,21 @@ export default function SellerForm() {
               <div>
                   <label className="block text-sm font-medium text-gray-700">Email</label>
                   <input
+                    name="email"
                       type="email"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                       placeholder="Digite o email"
+                  />
+              </div>
+
+            {/* CPF */}
+             <div>
+                  <label className="block text-sm font-medium text-gray-700">Senha</label>
+                  <input
+                      name="senha"
+                      type="password"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
+                      placeholder="Digite a senha do vendedor"
                   />
               </div>
 
@@ -76,6 +115,7 @@ export default function SellerForm() {
               <div>
                   <label className="block text-sm font-medium text-gray-700">Data de Admissão</label>
                   <input
+                  name="data_admissao"
                       type="date"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                   />
@@ -85,6 +125,7 @@ export default function SellerForm() {
               <div>
                   <label className="block text-sm font-medium text-gray-700">Salário</label>
                   <input
+                    name="salario"
                       type="number"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                       placeholder="Digite o salário"
@@ -94,7 +135,7 @@ export default function SellerForm() {
               {/* Status */}
               <div>
                   <label className="block text-sm font-medium text-gray-700">Status</label>
-                  <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
+                  <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" name="status">
                       <option>Ativo</option>
                       <option>Inativo</option>
                   </select>
@@ -104,6 +145,7 @@ export default function SellerForm() {
               <div>
                   <label className="block text-sm font-medium text-gray-700">Setor</label>
                   <input
+                    name="setor"
                       type="text"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                       placeholder="Digite o setor"

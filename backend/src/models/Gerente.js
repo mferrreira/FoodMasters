@@ -54,15 +54,16 @@ class Gerente extends Usuario {
     }
 
     // CRUD Vendedores
-    async listarTodosVendedores() {
-        return await prisma.usuario.findMany();
+    static async listarTodosVendedores() {
+        const vendedores = await prisma.usuario.findMany();
+        return vendedores
     }
 
     async obterVendedor(cpf) {
         return await prisma.usuario.findUnique({ where: { cpf_cnpj: cpf } });
     }
 
-    async adicionarVendedor( ...dadosVendedor ) {
+    static async adicionarVendedor( ...dadosVendedor ) {
         try {
             await new Vendedor(...dadosVendedor).save(true)
             return true
@@ -72,7 +73,7 @@ class Gerente extends Usuario {
         }
     }
 
-    async removerVendedor(cpf) {
+    static async removerVendedor(cpf) {
         try {
             await prisma.usuario.delete({ where: { cpf_cnpj: cpf } });
             return true;
@@ -82,7 +83,7 @@ class Gerente extends Usuario {
         }
     }
 
-    async atualizarVendedor(cpf, novosDados) {
+    static async atualizarVendedor(cpf, novosDados) {
         return await prisma.usuario.update({
             where: { cpf_cnpj: cpf },
             data: novosDados

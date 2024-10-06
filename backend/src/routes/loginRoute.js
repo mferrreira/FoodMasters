@@ -3,7 +3,7 @@ const router = express.Router();
 const LoginController = require('../controllers/loginController');
 
 // Rota para login
-router.post('/login', LoginController.login);
+router.post('/', LoginController.login);
 
 // Rota para testar o acesso protegido (autenticação)
 router.get('/protected', LoginController.authenticateToken, (req, res) => {

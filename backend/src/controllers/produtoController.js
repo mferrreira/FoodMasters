@@ -57,26 +57,16 @@ class ProdutoController {
             const { codigo_barras } = req.params;
             const { nome, descricao, categoriaId, preco, estoque, marca, data_fabricacao, data_validade, imagem_url, status, fornecedor } = req.body;
 
-            const produto = await Produto.getProdutoPorCodigo(codigo_barras);
-
+            const p = await Produto.getProdutoPorCodigo(codigo_barras);
+            const produto = new Produto(p.codigo_barras, p.nome, p.descricao, p.categoriaId, p.preco, p.estoque, p.marca, p.data_fabricacao, p.data_validade, p.imagem_url, p.status, p.fornecedor);
             if (!produto) 
                 return res.status(404).json({ error: "Produto não encontrado" });
 
-            // Atualizar produto
-            produto.nome = nome || produto.nome;
-            produto.descricao = descricao || produto.descricao;
-            produto.categoriaId = categoriaId || produto.categoriaId;
-            produto.preco = preco || produto.preco;
-            produto.estoque = estoque || produto.estoque;
-            produto.marca = marca || produto.marca;
-            produto.data_fabricacao = data_fabricacao || produto.data_fabricacao;
-            produto.data_validade = data_validade || produto.data_validade;
-            produto.imagem_url = imagem_url || produto.imagem_url;
-            produto.status = status || produto.status;
-            produto.fornecedor = fornecedor || produto.fornecedor;
+            console.log(nome, descricao, categoriaId, preco, estoque)
 
-            await produto.save(); // Atualizar produto no banco de dados
-
+            const a = await produto.update(produto.codigo_barras, produto); // Atualizar produto no banco de dados
+            console.log(a)
+            //produto.update(codigo_barras)
             return res.status(200).json(produto);
         } catch (error) {
             console.error("Erro ao atualizar produto:", error);
@@ -87,12 +77,13 @@ class ProdutoController {
     static async delete(req, res) {
         try {
             const { codigo_barras } = req.params;
-            const produto = await Produto.getProdutoPorCodigo(codigo_barras);
+            const p = await Produto.getProdutoPorCodigo(codigo_barras);
+            const produto = new Produto(p.codigo_barras, p.nome, p.descricao, p.categoriaId, p.preco, p.estoque, p.marca, p.data_fabricacao, p.data_validade, p.imagem_url, p.status, p.fornecedor);
 
             if (!produto) 
                 return res.status(404).json({ error: "Produto não encontrado" });
 
-            await produto.delete(); // Excluir produto do banco de dados
+            await Produto.delete(codigo_barras); // Excluir produto do banco de dados
 
             return res.status(200).json({ message: "Produto excluído com sucesso" });
         } catch (error) {

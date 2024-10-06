@@ -1,13 +1,45 @@
+"use client";
+
+import api from '../../services/api';
+
 export default function RegistrationProduct() {
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData);
+
+        console.log(data);
+
+        if(!data.data_validade)
+            return alert("Insira a data de validade e de fabricação");
+        
+
+        console.log(data);
+
+        try {
+            const res = await api.post("/api/produtos/", data); // Passando os dados do formulário
+            
+            if(res)
+                alert("Produto cadastrado com sucesso!")
+            
+            console.log("Produto cadastrado!", res.data);
+        } catch (e) {
+            console.error("Deu erro aqui: ", e);
+        }
+    }
+
     return (
-        <div className=" mx-24 my-6 bg-white  rounded-md">
+        <div className="mx-24 my-6 bg-white rounded-md">
             <h2 className="text-2xl font-bold mb-6">Cadastro de Produto</h2>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
                 {/* Nome do Produto */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Nome do Produto</label>
                     <input
                         type="text"
+                        name="nome"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                         placeholder="Digite o nome do produto"
                     />
@@ -17,6 +49,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Descrição</label>
                     <textarea
+                        name="descricao"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                         placeholder="Digite a descrição do produto"
                     />
@@ -25,20 +58,10 @@ export default function RegistrationProduct() {
                 {/* Categoria */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Categoria</label>
-                    <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
-                        <option>Escolha uma categoria</option>
-                        <option>Categoria 1</option>
-                        <option>Categoria 2</option>
-                    </select>
-                </div>
-
-                {/* Subcategoria */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Subcategoria</label>
-                    <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
-                        <option>Escolha uma subcategoria</option>
-                        <option>Subcategoria 1</option>
-                        <option>Subcategoria 2</option>
+                    <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" name="categoriaId">
+                        <option value="">Escolha uma categoria</option>
+                        <option value="1">Categoria 1</option>
+                        <option value="2">Categoria 2</option>
                     </select>
                 </div>
 
@@ -46,6 +69,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Preço</label>
                     <input
+                        name="preco"
                         type="number"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                         placeholder="Digite o preço do produto"
@@ -56,6 +80,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Quantidade em Estoque</label>
                     <input
+                        name="estoque"
                         type="number"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                         placeholder="Digite a quantidade em estoque"
@@ -66,6 +91,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Código de Barras</label>
                     <input
+                        name="codigo_barras"
                         type="text"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                         placeholder="Digite o código de barras"
@@ -76,6 +102,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Marca</label>
                     <input
+                        name="marca"
                         type="text"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                         placeholder="Digite a marca"
@@ -86,6 +113,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Data de Fabricação</label>
                     <input
+                        name="data_fabricacao"
                         type="date"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                     />
@@ -95,6 +123,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Data de Validade</label>
                     <input
+                        name="data_validade"
                         type="date"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                     />
@@ -104,6 +133,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Imagem</label>
                     <input
+                        name="imagem_url"
                         type="text"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                         placeholder="Digite a URL da imagem"
@@ -113,9 +143,9 @@ export default function RegistrationProduct() {
                 {/* Status do Produto */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Status do Produto</label>
-                    <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
-                        <option>Ativo</option>
-                        <option>Inativo</option>
+                    <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" name="status">
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
                     </select>
                 </div>
 
@@ -123,6 +153,7 @@ export default function RegistrationProduct() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Fornecedor</label>
                     <input
+                        name="fornecedor"
                         type="text"
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
                         placeholder="Digite o nome do fornecedor"

@@ -10,11 +10,11 @@ class Usuario {
         this.email = email;
         this.senha = senha;
         this.rg = rg;
-        this.dataNascimento = dataNascimento == undefined ? new Date() : dataNascimento;
+        this.dataNascimento = dataNascimento === undefined ? new Date().toISOString() : dataNascimento;
         this.endereco = endereco;
         this.telefone = telefone
-        this.dataAdmissao = dataAdmissao == undefined ? new Date() : dataAdmissao;
-        this.salario = salario === undefined ? 0 : salario,
+        this.dataAdmissao = dataNascimento === undefined ? new Date().toISOString() :dataAdmissao;
+        this.salario = salario === undefined ? 0 : parseFloat(salario),
         this.status = status;
         this.setor = setor;
     }
@@ -27,12 +27,12 @@ class Usuario {
                     cpf_cnpj: this.cpf,
                     rg: this.rg,
                     nome_completo: this.nomeCompleto,
-                    data_nascimento: this.dataNascimento,
+                    data_nascimento: new Date(this.dataNascimento).toISOString(),
                     email: this.email,
                     senha: hashedPassword,
                     endereco: this.endereco,
                     telefone: this.telefone,
-                    data_admissao: this.dataAdmissao,
+                    data_admissao: new Date(this.dataAdmissao).toISOString(),
                     salario: this.salario,
                     status: this.status,
                     setor: this.setor,

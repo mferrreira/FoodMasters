@@ -3,7 +3,13 @@ import { IoAddOutline, IoRemoveOutline } from "react-icons/io5";
 import { Divider } from "../components/Divider";
 import { useState } from "react";
 
-export default function Detail(){
+interface ProductProps {
+    title: String,
+    price: Number,
+    description: String,
+}
+
+export default function Detail(info: ProductProps){
     const [Discount, setDiscount] = useState(10);
 
     return(
