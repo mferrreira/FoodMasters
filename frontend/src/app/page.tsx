@@ -15,7 +15,12 @@ export default function Home() {
       <main className="w-auto max-w-[77.5rem] mx-[100px]">
 
       {
-            isAuthenticated ? (user?.user?.is_vendedor === true ? <DashBoard /> : <GerenteDashboard />) 
+            isAuthenticated 
+            ? (user?.user?.is_vendedor === true 
+
+                ? <DashBoard /> 
+                : <GerenteDashboard />) 
+            
             : <Login />
       }
         

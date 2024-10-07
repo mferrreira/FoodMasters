@@ -36,4 +36,9 @@ router.get('/:numeroPedido/recibo', async (req, res) => {
     await VendaController.gerarRecibo(req, res);
 });
 
+router.get('/api/vendas/produtos-mais-vendidos', VendaController.getProdutosMaisVendidos);
+
+router.get('/api/vendas/vendedores-mais-ativos', VendaController.getVendedoresMaisAtivos);
+
+
 module.exports = router;

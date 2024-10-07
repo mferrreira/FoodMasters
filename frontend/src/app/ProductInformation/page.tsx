@@ -22,13 +22,12 @@ interface ProductDetails {
 
 export default function ProductInformation() {
   const [product, setProduct] = useState<ProductDetails | null>(null);
-  const [loading, setLoading] = useState(true); // Estado para controle de loading
-  const searchParams = useSearchParams(); // Hook para acessar os parâmetros da busca
-  const id = searchParams.get('id'); // Obtendo o ID do produto a partir dos parâmetros da busca
+  const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id'); 
 
   useEffect(() => {
     if (id) {
-      // Função para buscar os detalhes do produto
       const fetchProductDetails = async () => {
         try {
           const response = await api.get(`/api/users/gerente/produto/${id}`);
@@ -37,24 +36,24 @@ export default function ProductInformation() {
           }
           const data: ProductDetails = await response.data;
           console.log(data)
-          setProduct(data); // Atualiza o estado com os dados do produto
+          setProduct(data);
         } catch (error) {
-          console.error(error); // Log do erro
+          console.error(error);
         } finally {
-          setLoading(false); // Define loading como false após a requisição
+          setLoading(false);
         }
       };
 
-      fetchProductDetails(); // Chama a função para buscar os detalhes
+      fetchProductDetails();
     }
-  }, [id]); // Reexecuta o efeito quando o ID muda
+  }, [id]);
 
   if (loading) {
     return <p>Carregando detalhes do produto...</p>;
   }
 
   if (!product) {
-    return <p>Produto não encontrado.</p>; // Mensagem caso o produto não seja encontrado
+    return <p>Produto não encontrado.</p>;
   }
 
   return (
@@ -62,12 +61,11 @@ export default function ProductInformation() {
       <h1 className="text-3xl font-bold mb-4">Detalhes do Produto</h1>
       
       <div className="flex flex-col md:flex-row items-start md:items-center">
-        {/* Exibição da imagem do produto */}
+
         <div className="md:w-1/4">
           <img src={product.imagem_url} alt={product.nome} className="w-full h-auto rounded-md" />
         </div>
         
-        {/* Informações detalhadas do produto */}
         <div className="grid grid-cols-1 gap-4 md:ml-6">
           <div><strong>Nome do Produto:</strong> {product.nome}</div>
           <div><strong>Descrição:</strong> {product.descricao}</div>
@@ -81,6 +79,7 @@ export default function ProductInformation() {
           <div><strong>Status:</strong> {product.status}</div>
           <div><strong>Fornecedor:</strong> {product.fornecedor}</div>
         </div>
+        
       </div>
     </div>
   );

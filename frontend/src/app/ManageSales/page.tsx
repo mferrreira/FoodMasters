@@ -1,29 +1,62 @@
 'use client'
 import Link from "next/link";
-import { useState } from "react";
-import { FiEdit, FiTrash } from "react-icons/fi";
-import { IoEye, IoAdd } from "react-icons/io5";
+import { useState, useEffect } from "react";
+import { IoEye } from "react-icons/io5";
+import api from "@/services/api";
+
+interface VendaProduto {
+    vendaId: string;
+    produtoId: string;
+    quantidade: number;
+    preco_unitario: number;
+}
+
+interface Venda {
+    numero_pedido: string;
+    data_venda: string; // Pode ser um Date, se você preferir
+    nome_cliente: string;
+    cpf_cnpj_cliente: string;
+    valor_total: number;
+    desconto: number;
+    valor_final: number | null; // pode ser null
+    forma_pagamento: string;
+    status_venda: string;
+    data_entrega: string; // Pode ser um Date, se você preferir
+    endereco_entrega: string;
+    vendedorId: string;
+    Venda_Produto: VendaProduto[];
+}
+
 
 export default function ManageSales() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
+    const [sales, setSales] = useState<Venda[]>([]); // Use a interface Venda
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    //a base de dados
-    const [sellers, setSellers] = useState([
-        { id: 1, name: "João Silva", DataCompra: "16/05/2024", ValorCompra: 1500 },
-        { id: 2, name: "Maria Oliveira", DataCompra: "19/05/2024", ValorCompra: 1000},
-        // Adicione mais vendedores conforme necessário
-    ]);
+    useEffect(() => {
+        const fetchSales = async () => {
+            try {
+                const response = await api.get('/api/vendas'); // Ajuste conforme a sua rota
+                setSales(response.data.vendas); // Acesse o array de vendas corretamente
+            } catch (err) {
+                setError("Erro ao buscar vendas");
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    //O filtro
-    const filteredSellers = sellers.filter(seller =>
-        seller.name.toLowerCase().includes(searchTerm.toLowerCase())
+        fetchSales();
+    }, []);
+
+    const filteredSales = sales.filter(sale =>
+        sale.nome_cliente.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    //Total de paginas
-    const totalPages = Math.ceil(filteredSellers.length / itemsPerPage);
-
+    const totalPages = Math.ceil(filteredSales.length / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -37,7 +70,15 @@ export default function ManageSales() {
         }
     };
 
-    const currentSellers = filteredSellers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const currentSales = filteredSales.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    if (loading) {
+        return <div>Carregando...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
 
     return (
         <div className="mx-24 bg-white rounded-md p-6">
@@ -45,12 +86,11 @@ export default function ManageSales() {
             <div className="flex mb-4">
                 <input
                     type="text"
-                    placeholder="Buscar vendedor..."
+                    placeholder="Buscar comprador..."
                     className="border border-gray-300 rounded-md py-2 px-3 mr-2"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-               
             </div>
             <table className="min-w-full border-collapse">
                 <thead>
@@ -62,15 +102,15 @@ export default function ManageSales() {
                     </tr>
                 </thead>
                 <tbody>
-                    {currentSellers.map(seller => (
-                        <tr key={seller.id} className="hover:bg-gray-100">
-                            <td className="border-b p-4">{seller.name}</td>
-                            <td className="border-b p-4">{seller.DataCompra}</td>
-                            <td className="border-b p-4">{seller.ValorCompra}</td>
-                            <td className="border-b p-4 ">
-                                <Link href="./ViewSales">
+                    {currentSales.map(sale => (
+                        <tr key={sale.numero_pedido} className="hover:bg-gray-100">
+                            <td className="border-b p-4">{sale.nome_cliente}</td>
+                            <td className="border-b p-4">{new Date(sale.data_venda).toLocaleDateString()}</td>
+                            <td className="border-b p-4">{sale.valor_total.toFixed(2)}</td>
+                            <td className="border-b p-4">
+                                <Link href={`./SaleDetail?id=${sale.numero_pedido}`}>
                                     <button className="text-blue-500">
-                                        <IoEye className="h-6 w-6"/>
+                                        <IoEye className="h-6 w-6" />
                                     </button>
                                 </Link>
                             </td>

@@ -3,20 +3,24 @@
 import { IoSearch } from "react-icons/io5";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
 import { LuUserCircle2 } from "react-icons/lu";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
-import { useUser } from "@/context/UserContext"; // Importando o contexto de usuário
+import { useUser } from "@/context/UserContext";
+import { useCart } from "@/context/CartContext";
 
 export function Header() {
-    const { user, isAuthenticated, logout } = useUser(); // Desestruturando o contexto
-    const [isMenuVisible, setIsMenuVisible] = useState(false); // Estado para controle da exibição do menu
+    const { user, isAuthenticated, logout } = useUser();
+    const { cart } = useCart();
+    const [isMenuVisible, setIsMenuVisible] = useState(false);
 
     const handleUserMenuToggle = () => {
         setIsMenuVisible(!isMenuVisible);
     };
+
+    const totalItems = cart.reduce( (acc, item) => acc + item.quantidade, 0);
+
     return (
 
-        
         <div className="flex flex-row items-center justify-between mx-24 my-6">
             <div className="w-full flex justify-between mr-6">
                 <Link href="/">
@@ -30,12 +34,18 @@ export function Header() {
                     </button>
                 </form>
             </div>
+
         {isAuthenticated && (
             <div className="flex flex-row w-16 justify-between">
                 <div className="relative">
                     <Link href="../Cart/">
                         <button className="border-none rounded-full bg-white cursor-pointer">
                             <PiShoppingCartSimpleBold className="w-6 h-6" />
+                            {totalItems > 0 && (
+                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                                    {totalItems}
+                                </span>
+                            )}
                         </button>
                     </Link>
                 </div>

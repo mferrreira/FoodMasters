@@ -2,11 +2,12 @@ const prisma = require("../services/prismaClient");
 
 class Venda {
 
-    constructor(vendedorId, numeroPedido, dataVenda, nomeCliente, cpfCliente, valorTotal, desconto, valorFinal, formaPagamento, statusVenda, dataEntrega, enderecoEntrega) {
+    constructor(vendedorId, numeroPedido, nomeCliente, cpfCliente, valorTotal,
+         desconto, valorFinal, formaPagamento, statusVenda, dataEntrega, enderecoEntrega) {
         this.vendedorId = vendedorId;
         this.numeroPedido = numeroPedido
         
-        this.dataVenda = dataVenda;
+        this.dataVenda = new Date().toISOString();
         this.nomeCliente = nomeCliente;
         this.cpfCliente = cpfCliente;
         this.valorTotal = valorTotal;
@@ -14,7 +15,7 @@ class Venda {
         this.valorFinal = valorFinal;
         this.formaPagamento = formaPagamento;
         this.statusVenda = statusVenda;
-        this.dataEntrega = dataEntrega;
+        this.dataEntrega = new Date(dataEntrega).toISOString();
         this.enderecoEntrega = enderecoEntrega;
 
         this.produtos = []; 
@@ -22,6 +23,8 @@ class Venda {
 
     // CRUD Registro de Venda
     async save() {
+        this.numeroPedido = this.numeroPedido || this.generateUniqueId();
+    
         return await prisma.venda.create({
             data: {
                 numero_pedido: this.numeroPedido,
@@ -46,6 +49,11 @@ class Venda {
             },
         });
     }
+
+    generateUniqueId() {
+        return 'Venda-' + Math.random().toString(36).substr(2, 9);
+    }
+    
 
     async update(numeroPedido, ...novosDados) {
         const existingVenda = await Venda.findByNumeroPedido(numeroPedido);
@@ -144,6 +152,36 @@ class Venda {
         return await prisma.venda.findUnique({
             where: { numero_pedido: numeroPedido },
             include: { Venda_Produto: true },
+        });
+    }
+
+    async getProdutosMaisVendidos(limit = 5) {
+        return await prisma.venda_Produto.groupBy({
+            by: ['produtoId'],
+            _sum: {
+                quantidade: true,
+            },
+            orderBy: {
+                _sum: {
+                    quantidade: 'desc',
+                },
+            },
+            take: limit,
+        });
+    }
+
+    async getVendedoresMaisAtivos(limit = 5) {
+        return await prisma.venda.groupBy({
+            by: ['vendedorId'],
+            _count: {
+                numero_pedido: true,
+            },
+            orderBy: {
+                _count: {
+                    numero_pedido: 'desc',
+                },
+            },
+            take: limit,
         });
     }
 }

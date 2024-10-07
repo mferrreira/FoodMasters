@@ -44,8 +44,7 @@ class LoginController {
   static authenticateToken(req, res, next) {
 
       
-      const token = req.header('Authorization')?.split(' ')[1];
-      console.log("chegou requisição aqui", token)
+    const token = req.header('Authorization')?.split(' ')[1];
     
     if (!token) return res.status(403).json({error: 'Acesso Negado!'});
 

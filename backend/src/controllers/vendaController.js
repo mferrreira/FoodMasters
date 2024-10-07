@@ -1,63 +1,65 @@
 const Venda = require('../models/Venda');
 const Produto = require('../models/Produto');
+const prisma = require("../services/prismaClient");
+
 
 class VendaController {
   
   static async createVenda(req, res) {
     try {
-      const {
-        numeroPedido,
-        dataVenda,
-        nomeCliente,
-        cpfCliente,
-        valorTotal,
-        desconto,
-        valorFinal,
-        formaPagamento,
-        statusVenda,
-        dataEntrega,
-        enderecoEntrega,
-        vendedorId,
-        produtos
-      } = req.body;
+        const {
+            nomeCliente,
+            cpfCliente,
+            valorTotal,
+            desconto,
+            formaPagamento,
+            statusVenda,
+            dataEntrega,
+            enderecoEntrega,
+            vendedorId,
+            produtos,
+        } = req.body;
 
-      // Cria uma nova instância da venda
-      const venda = new Venda(
-        numeroPedido,
-        dataVenda,
-        nomeCliente,
-        cpfCliente,
-        valorTotal,
-        desconto,
-        valorFinal,
-        formaPagamento,
-        statusVenda,
-        dataEntrega,
-        enderecoEntrega,
-        vendedorId
-      );
+        // Cria uma nova instância da venda sem o numeroPedido
+        const venda = new Venda(
+            vendedorId,
+            null,
+            nomeCliente,
+            cpfCliente,
+            valorTotal,
+            desconto,
+            null,
+            formaPagamento,
+            statusVenda,
+            dataEntrega,
+            enderecoEntrega,
+        );
 
-      // Adiciona produtos à venda
-      for (const produtoData of produtos) {
-        const produto = await Produto.getProdutoPorCodigo(produtoData.codigo_barras);
-        if (produto) {
-          venda.addProduto({
-            codigo_barras: produto.codigo_barras,
-            quantidade: produtoData.quantidade,
-            preco_unitario: produto.preco
-          });
+        // Salva a venda no banco de dados
+        const vendaSalva = await venda.save();
+
+        // Adiciona produtos à venda usando o numeroPedido gerado
+        for (const produtoData of produtos) {
+            const produto = await Produto.getProdutoPorCodigo(produtoData.codigo_barras);
+            if (produto) {
+                await venda.addProduto({
+                    codigo_barras: produto.codigo_barras,
+                    quantidade: produtoData.quantidade,
+                    preco_unitario: produto.preco,
+                });
+            }
         }
-      }
 
-      // Salva a venda no banco de dados
-      await venda.save();
+        // Calcula o valor final da venda
+        await venda.calcularValorFinal();
 
-      return res.status(201).json({ message: 'Venda criada com sucesso!', venda });
+        return res.status(201).json({ message: 'Venda criada com sucesso!', venda: vendaSalva });
     } catch (error) {
-      console.error("Erro ao criar venda:", error);
-      return res.status(500).json({ error: "Erro interno do servidor." });
+        console.error("Erro ao criar venda:", error);
+        return res.status(500).json({ error: "Erro interno do servidor." });
     }
-  }
+}
+
 
   static async updateVenda(req, res) {
     try {
@@ -150,7 +152,7 @@ class VendaController {
   static async getVenda(req, res) {
     try {
       const { numeroPedido } = req.params;
-
+      console.log(numeroPedido)
       // Encontra a venda pelo número do pedido
       const venda = await Venda.findByNumeroPedido(numeroPedido);
       if (!venda) {
@@ -199,6 +201,28 @@ class VendaController {
       return res.status(500).json({ error: "Erro interno do servidor." });
     }
   }
+
+  static async getProdutosMaisVendidos(req, res) {
+    try {
+        const venda = new Venda();
+        const produtosMaisVendidos = await venda.getProdutosMaisVendidos();
+        res.json(produtosMaisVendidos);
+    } catch (error) {
+        console.error("Erro ao buscar produtos mais vendidos:", error);
+        res.status(500).json({ message: "Erro ao buscar produtos mais vendidos." });
+    }
+}
+
+static async getVendedoresMaisAtivos(req, res) {
+    try {
+        const venda = new Venda();
+        const vendedoresMaisAtivos = await venda.getVendedoresMaisAtivos();
+        res.json(vendedoresMaisAtivos);
+    } catch (error) {
+        console.error("Erro ao buscar vendedores mais ativos:", error);
+        res.status(500).json({ message: "Erro ao buscar vendedores mais ativos." });
+    }
+}
 }
 
 module.exports = VendaController;
