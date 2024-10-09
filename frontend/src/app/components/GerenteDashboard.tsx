@@ -5,12 +5,12 @@ import api from "@/services/api";
 
 interface ProdutoMaisVendido {
     produtoId: string;
-    quantidade: number;
+    _sum: {quantidade: number};
 }
 
 interface VendedorMaisAtivo {
     vendedorId: string;
-    numeroDeVendas: number;
+    _count: {numero_pedido: number};
 }
 
 export default function GerenteDashboard() {
@@ -20,11 +20,14 @@ export default function GerenteDashboard() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const produtosResponse = await api.get("/api/vendas/produtos-mais-vendidos");
+                const produtosResponse = await api.get("/api/vendas/top/produto");
                 setProdutosMaisVendidos(produtosResponse.data);
 
-                const vendedoresResponse = await api.get("/api/vendas/vendedores-mais-ativos");
+                const vendedoresResponse = await api.get("/api/vendas/top/vendedor");
                 setVendedoresMaisAtivos(vendedoresResponse.data);
+
+                console.log(produtosResponse.data)
+                console.log(vendedoresResponse.data)
             } catch (error) {
                 console.error("Erro ao buscar dados do dashboard:", error);
             }
@@ -50,7 +53,7 @@ export default function GerenteDashboard() {
                         {produtosMaisVendidos.map((produto) => (
                             <tr key={produto.produtoId} className="border-b">
                                 <td className="border p-2">{produto.produtoId}</td>
-                                <td className="border p-2">{produto.quantidade}</td>
+                                <td className="border p-2">{produto._sum.quantidade}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -70,7 +73,7 @@ export default function GerenteDashboard() {
                         {vendedoresMaisAtivos.map((vendedor) => (
                             <tr key={vendedor.vendedorId} className="border-b">
                                 <td className="border p-2">{vendedor.vendedorId}</td>
-                                <td className="border p-2">{vendedor.numeroDeVendas}</td>
+                                <td className="border p-2">{vendedor._count.numero_pedido}</td>
                             </tr>
                         ))}
                     </tbody>

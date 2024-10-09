@@ -12,7 +12,7 @@ interface ProductInfo {
     showAddToCart: boolean
 }
 
-export function CardProducts({ codigo_barras, nome, preco, desconto = 0, imageUrl, showAddToCart }: ProductInfo, ) {
+export function CardProducts({ codigo_barras, nome, preco, desconto = 0, imageUrl, showAddToCart = true }: ProductInfo, ) {
     const { addToCart } = useCart(); // Função para adicionar ao carrinho
     const [quantidade, setQuantidade] = useState(1);
 
@@ -38,7 +38,7 @@ export function CardProducts({ codigo_barras, nome, preco, desconto = 0, imageUr
                 />
             </div>
             <div className="mt-4">
-                <p className="font-satoshi text-[1.2rem] font-bold truncate">{nome} produto</p>
+                <p className="font-satoshi text-[1.2rem] font-bold truncate">{nome}</p>
 
                 {desconto ? (
                     <div className="flex items-center">
@@ -58,14 +58,14 @@ export function CardProducts({ codigo_barras, nome, preco, desconto = 0, imageUr
                     </p>
                 )}
 
-                {showAddToCart ??
+                {showAddToCart === true ? 
                 <button
                     onClick={handleAddToCart}
                     className="w-full bg-black text-white my-4 py-2 px-4 rounded-md shadow hover:bg-slate-600"
                 >
                     Adicionar ao Carrinho
                 </button>
-                }
+                : <div></div>}
             </div>
         </div>
     );

@@ -204,9 +204,9 @@ class VendaController {
 
   static async getProdutosMaisVendidos(req, res) {
     try {
-        const venda = new Venda();
-        const produtosMaisVendidos = await venda.getProdutosMaisVendidos();
-        res.json(produtosMaisVendidos);
+        const produtosMaisVendidos = await Venda.getProdutosMaisVendidos();
+        console.log(produtosMaisVendidos)
+        res.status(200).json(produtosMaisVendidos);
     } catch (error) {
         console.error("Erro ao buscar produtos mais vendidos:", error);
         res.status(500).json({ message: "Erro ao buscar produtos mais vendidos." });
@@ -215,8 +215,7 @@ class VendaController {
 
 static async getVendedoresMaisAtivos(req, res) {
     try {
-        const venda = new Venda();
-        const vendedoresMaisAtivos = await venda.getVendedoresMaisAtivos();
+        const vendedoresMaisAtivos = await Venda.getVendedoresMaisAtivos();
         res.json(vendedoresMaisAtivos);
     } catch (error) {
         console.error("Erro ao buscar vendedores mais ativos:", error);

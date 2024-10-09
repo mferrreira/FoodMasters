@@ -89,8 +89,8 @@ export function Filter() {
     };
 
     return (
-        <div className="w-[18.4rem] border border-[#F0EEED] rounded-[20px] p-6 py-5 mr-5 h-min">
-            <div className="flex justify-between mb-6">
+        <div className="w-[18.4rem] border border-[#F0EEED] rounded-[20px] p-6 py-5 mr-5s">
+            <div className="flex justify mb-6">
                 <h2 className="text-xl font-bold">Filtro</h2>
                 <HiAdjustmentsVertical className="w-6 h-6 text-[#999999]" />
             </div>

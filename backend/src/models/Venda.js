@@ -155,7 +155,7 @@ class Venda {
         });
     }
 
-    async getProdutosMaisVendidos(limit = 5) {
+    static async getProdutosMaisVendidos(limit = 5) {
         return await prisma.venda_Produto.groupBy({
             by: ['produtoId'],
             _sum: {
@@ -170,7 +170,7 @@ class Venda {
         });
     }
 
-    async getVendedoresMaisAtivos(limit = 5) {
+    static async getVendedoresMaisAtivos(limit = 5) {
         return await prisma.venda.groupBy({
             by: ['vendedorId'],
             _count: {

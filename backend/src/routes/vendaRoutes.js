@@ -36,9 +36,12 @@ router.get('/:numeroPedido/recibo', async (req, res) => {
     await VendaController.gerarRecibo(req, res);
 });
 
-router.get('/api/vendas/produtos-mais-vendidos', VendaController.getProdutosMaisVendidos);
+router.get('/top/produto', async (req, res) => {
+    console.log('chegou aqui')
+    VendaController.getProdutosMaisVendidos(req, res)
+});
 
-router.get('/api/vendas/vendedores-mais-ativos', VendaController.getVendedoresMaisAtivos);
+router.get('/top/vendedor', VendaController.getVendedoresMaisAtivos);
 
 
 module.exports = router;
