@@ -21,6 +21,24 @@ Para subir as modificações:
 `$ git push origin {branch}`
 
 
+# COMEÇANDO
+
+1. Instale o nodejs e npm
+
+2. Vá até ./backend e execute `npm i` para instalar as dependências
+
+3. Vá até ./frontend e execute `npm i` para instalar as dependências
+
+4. Para fazer as migrações do banco de dados, em ./backend execute `npx prisma migrate dev --name dev`
+
+5. Para inicializar o servidor, vá até ./backend e execute `npm start`
+
+6. Para inicilizar o frontend, vá até ./frontend e execute `npm run dev`
+
+7. Para adicionar um novo Gerente, vá até ./backend/src/utls e execute `node adicionarNovoGerente.js` e preencha com as informações
+
+8. Na URL do frontend (http://localhost:3000), faça login com as informações do Gerente e adicione um novo vendedor
+
 
 # Rotas da API
 
