@@ -55,7 +55,7 @@ model Categoria {
 }
 
 model Venda {
-  numero_pedido    String          @id @default(autoincrement())
+  numero_pedido    String          @id
   data_venda       DateTime?
   nome_cliente     String?
   cpf_cnpj_cliente String?
